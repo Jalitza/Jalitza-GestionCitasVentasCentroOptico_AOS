@@ -1,6 +1,18 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
+import { importProvidersFrom } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { provideRouter, Routes } from '@angular/router';
+import { LoginComponent } from './app//login/login.component';
+import { RegisterComponent } from './app/register/register.component';
 
-bootstrapApplication(AppComponent, appConfig)
-  .catch((err) => console.error(err));
+const routes: Routes = [
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: '', redirectTo: '/login', pathMatch: 'full' } // Ruta por defecto
+];
+
+bootstrapApplication(AppComponent, {
+  providers: [importProvidersFrom(FormsModule), provideRouter(routes)]
+}).catch(err => console.error(err));
