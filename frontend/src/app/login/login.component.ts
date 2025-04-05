@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router'; // Importa Router
+import { Router } from '@angular/router'; 
 import { RouterModule } from '@angular/router';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+
 
 @Component({
   selector: 'app-login',
@@ -14,18 +16,17 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
 
-  constructor(private router: Router) {} // Inyectar Router
+  constructor(private router: Router) {} 
 
   login() {
-    console.log('Correo:', this.email);
-    console.log('Contraseña:', this.password);
-
-    // Simulación de autenticación
-    if (this.email === 'admin@example.com' && this.password === '123456') {
-      console.log('Inicio de sesión exitoso');
-      this.router.navigate(['/home']); // Redirige al home después de iniciar sesión
-    } else {
-      console.log('Credenciales incorrectas');
-    }
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, this.email, this.password)
+      .then((userCredential) => {
+        console.log('Inicio de sesión exitoso:', userCredential);
+        this.router.navigate(['/home']);
+      })
+      .catch((error) => {
+        console.error('Error al iniciar sesión:', error.message);
+      });
   }
 }
