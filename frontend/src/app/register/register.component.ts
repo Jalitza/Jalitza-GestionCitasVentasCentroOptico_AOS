@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router'; // Importa Router
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 @Component({
   selector: 'app-register',
@@ -11,18 +12,27 @@ import { Router } from '@angular/router'; // Importa Router
 })
 export class RegisterComponent {
   name: string = '';
+  lastname: string = '';
   email: string = '';
+  phone: string = '';
   password: string = '';
 
-  constructor(private router: Router) {} // Inyecta Router
+  constructor(private router: Router) {}
 
   register() {
-    console.log('Nombre:', this.name);
-    console.log('Correo:', this.email);
-    console.log('Contraseña:', this.password);
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, this.email, this.password)
+      .then((userCredential) => {
+        alert('✅ Registro exitoso'); // 
+        console.log('Usuario registrado:', userCredential.user);
+        this.router.navigate(['/login']); // 
+      })
+      .catch((error) => {
+        alert('❌ Error en el registro: ' + error.message); 
+      });
   }
 
   redirectToLogin() {
-    this.router.navigate(['/login']); // Redirecciona al login
+    this.router.navigate(['/login']);
   }
 }
