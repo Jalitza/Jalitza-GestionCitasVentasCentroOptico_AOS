@@ -1,36 +1,24 @@
 <div class="container d-flex justify-content-center align-items-center vh-100">
-  <div class="register-container p-4 shadow rounded">
-    <h2 class="text-center">Registro</h2>
-    <form (ngSubmit)="register()">
-      <div class="mb-3">
-        <label for="name" class="form-label">Nombre</label>
-        <input type="text" class="form-control" id="name" [(ngModel)]="name" name="name" required>
-      </div>
-
-      <div class="mb-3">
-        <label for="lastname" class="form-label">Apellido</label>
-        <input type="text" class="form-control" id="lastname" [(ngModel)]="lastname" name="lastname" required>
-      </div>
-
-      <div class="mb-3">
-        <label for="email" class="form-label">Correo</label>
-        <input type="email" class="form-control" id="email" [(ngModel)]="email" name="email" required>
-      </div>
-
-      <div class="mb-3">
-        <label for="phone" class="form-label">Teléfono</label>
-        <input type="text" class="form-control" id="phone" [(ngModel)]="phone" name="phone" required>
-      </div>
-
-      <div class="mb-3">
-        <label for="password" class="form-label">Contraseña</label>
-        <input type="password" class="form-control" id="password" [(ngModel)]="password" name="password" required>
-      </div>
-
-      <button type="submit" class="btn btn-primary w-100">Registrarse</button>
-      <p class="text-center mt-3">
-        ¿Ya tienes cuenta? <button (click)="redirectToLogin()">Inicia sesión</button>
-      </p>
-    </form>
+    <div class="register-container p-4 shadow rounded">
+      <h2 class="text-center">Registro</h2>
+      <form (ngSubmit)="register()">
+        <div class="mb-3">
+          <label for="name" class="form-label">Nombre</label>
+          <input type="text" class="form-control" id="name" [(ngModel)]="name" name="name" required>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Correo</label>
+          <input type="email" class="form-control" id="email" [(ngModel)]="email" name="email" required>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" id="password" [(ngModel)]="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+        <p class="text-center mt-3">
+          ¿Ya tienes cuenta? <button (click)="redirectToLogin()">Inicia sesión</button>
+        </p>
+      </form>
+    </div>
   </div>
-</div>
+  
