@@ -3,12 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router'; 
 import { RouterModule } from '@angular/router';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { GoogleAutenticacionComponent } from '../google-autenticacion/google-autenticacion.component';
 
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterModule],
+  imports: [FormsModule, RouterModule, GoogleAutenticacionComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
