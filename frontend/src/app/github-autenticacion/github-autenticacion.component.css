@@ -1,0 +1,16 @@
+.github-login-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #24292e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .github-login-btn:hover {
+    background-color: #444d56;
+  }
+  
