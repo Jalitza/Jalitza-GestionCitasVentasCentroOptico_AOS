@@ -8,6 +8,7 @@ import { getAuth } from 'firebase/auth';
 import { LoginComponent } from './app/login/login.component';
 import { RegisterComponent } from './app/register/register.component';
 import { HomeComponent } from './app/home/home.component';
+import { PerfilComponent } from './app/perfil/perfil.component';
 
 
 const firebaseConfig = {
@@ -26,7 +27,8 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' }, 
-  { path: 'home', component: HomeComponent } 
+  { path: 'home', component: HomeComponent },
+  { path: 'perfil', component: PerfilComponent } 
 ];
 
 bootstrapApplication(AppComponent, {

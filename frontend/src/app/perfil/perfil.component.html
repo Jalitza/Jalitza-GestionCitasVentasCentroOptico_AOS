@@ -1,0 +1,19 @@
+<div class="perfil-container">
+  <h2>Mi Perfil</h2>
+
+  <label>Nombre:</label>
+  <input [(ngModel)]="nombre" type="text" />
+
+  <button (click)="actualizarNombre()">Actualizar Nombre</button>
+
+  <p><strong>Correo:</strong> {{ email }}</p>
+
+  <label>Nueva Contraseña:</label>
+  <input [(ngModel)]="nuevaContrasena" type="password" />
+
+  <button (click)="actualizarContrasena()">Actualizar Contraseña</button>
+
+  <hr />
+
+  <button class="delete-btn" (click)="eliminarCuenta()">Eliminar Cuenta</button>
+</div>

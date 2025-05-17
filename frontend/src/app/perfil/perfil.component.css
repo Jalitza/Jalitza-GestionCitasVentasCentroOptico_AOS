@@ -1,0 +1,32 @@
+.perfil-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #fff0f5;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+input {
+  width: 100%;
+  padding: 0.5rem;
+  margin: 0.5rem 0 1rem;
+  border: 1px solid #f48fb1;
+  border-radius: 6px;
+}
+
+button {
+  display: block;
+  margin-top: 0.5rem;
+  background-color: #ec407a;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.delete-btn {
+  background-color: #e53935;
+  margin-top: 2rem;
+}
