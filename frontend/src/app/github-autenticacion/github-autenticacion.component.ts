@@ -1,26 +1,45 @@
 import { Component } from '@angular/core';
-import { getAuth, signInWithPopup, GithubAuthProvider } from 'firebase/auth';
-import { Router } from '@angular/router';
+import { getAuth, signInWithPopup, GithubAuthProvider, fetchSignInMethodsForEmail, GoogleAuthProvider, linkWithCredential } from 'firebase/auth';
 
 @Component({
-  selector: 'app-github-autenticacion',
-  templateUrl: './github-autenticacion.component.html',
-  styleUrls: ['./github-autenticacion.component.css']
+  selector: 'app-login-github',
+  templateUrl: './login-github.component.html'
 })
-export class GithubAutenticacionComponent {
-
-  constructor(private router: Router) {}
+export class LoginGithubComponent {
 
   loginWithGitHub() {
     const auth = getAuth();
     const provider = new GithubAuthProvider();
+
     signInWithPopup(auth, provider)
       .then(result => {
-        alert('✅ Autenticación con GitHub exitosa');
-        this.router.navigate(['/home']);
+        console.log('Inicio de sesión exitoso con GitHub');
       })
-      .catch(error => {
-        alert('❌ Error en la autenticación: ' + error.message);
+      .catch(async error => {
+        if (error.code === 'auth/account-exists-with-different-credential') {
+          const email = error.customData.email;
+          const pendingCred = GithubAuthProvider.credentialFromError(error);
+
+          // Buscar qué métodos están registrados con ese email
+          const methods = await fetchSignInMethodsForEmail(auth, email);
+
+          if (methods.includes('google.com')) {
+            const googleProvider = new GoogleAuthProvider();
+            // Iniciar sesión con Google
+            signInWithPopup(auth, googleProvider)
+              .then(result => {
+                // Vincular cuenta de GitHub
+                linkWithCredential(result.user, pendingCred!)
+                  .then(() => {
+                    alert('¡Cuenta de GitHub vinculada con éxito!');
+                  });
+              });
+          } else {
+            alert('El correo ya está registrado con otro método.');
+          }
+        } else {
+          console.error('Error inesperado:', error);
+        }
       });
   }
 }
