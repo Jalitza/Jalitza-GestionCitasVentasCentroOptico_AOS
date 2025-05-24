@@ -6,11 +6,13 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { GoogleAutenticacionComponent } from '../google-autenticacion/google-autenticacion.component';
 import { GithubAutenticacionComponent } from '../github-autenticacion/github-autenticacion.component';
 import { FacebookAutenticacionComponent } from "../facebook-autenticacion/facebook-autenticacion.component";
+import { RecuperarPasswordComponent } from '../recuperar-password/recuperar-password.component'; // <-- Agrega esto
+
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterModule, GoogleAutenticacionComponent, GithubAutenticacionComponent, FacebookAutenticacionComponent],
+  imports: [FormsModule, RouterModule, GoogleAutenticacionComponent, GithubAutenticacionComponent, FacebookAutenticacionComponent, RecuperarPasswordComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -31,4 +33,8 @@ export class LoginComponent {
         console.error('Error al iniciar sesión:', error.message);
       });
   }
+  irARecuperarPassword() {
+  this.router.navigate(['/recuperar-password']);
+}
+
 }

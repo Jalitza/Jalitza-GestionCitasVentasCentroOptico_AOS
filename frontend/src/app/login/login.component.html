@@ -14,10 +14,14 @@
       <button type="submit" class="btn btn-primary">Ingresar</button>
       <div class="auth-buttons">
         <app-google-autenticacion></app-google-autenticacion>
-        <app-github-autenticacion></app-github-autenticacion>
         <app-facebook-autenticacion></app-facebook-autenticacion>
+        <app-login-github></app-login-github>
 
-
+      </div>
+      <div>
+        <button (click)="irARecuperarPassword()" class="recuperar-btn">
+          ¿Olvidaste tu contraseña?
+        </button>
       </div>
       <div class="register-link" >
         ¿No tienes cuenta?  
