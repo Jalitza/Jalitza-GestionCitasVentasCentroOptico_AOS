@@ -1,0 +1,47 @@
+.auth-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  color: white;
+  width: 50px;
+  height: 50px;
+  transition: background-color 0.3s ease;
+  gap: 10px;
+}
+
+.auth-btn img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+/* Colores para cada botón */
+.github-btn {
+  background-color: #24292e;
+}
+
+.github-btn:hover {
+  background-color: #444d56;
+}
+
+.facebook-btn {
+  background-color: #1877f2;
+}
+
+.facebook-btn:hover {
+  background-color: #145dbf;
+}
+
+.google-btn {
+  background-color: #4285f4;
+}
+
+.google-btn:hover {
+  background-color: #357ae8;
+}
