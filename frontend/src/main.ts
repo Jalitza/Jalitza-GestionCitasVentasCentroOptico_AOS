@@ -5,9 +5,14 @@ import { FormsModule } from '@angular/forms';
 import { provideRouter, Routes } from '@angular/router';
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+
 import { LoginComponent } from './app/login/login.component';
 import { RegisterComponent } from './app/register/register.component';
 import { HomeComponent } from './app/home/home.component';
+import { PerfilComponent } from './app/perfil/perfil.component';
+
+import { RecuperarPasswordComponent } from './app/recuperar-password/recuperar-password.component';
 
 
 const firebaseConfig = {
@@ -19,14 +24,19 @@ const firebaseConfig = {
   appId: "1:108870459409:web:c082845cedb125a36991b0"
 };
 
-initializeApp(firebaseConfig);
-getAuth(); 
+const app = initializeApp(firebaseConfig);
+
+export const auth = getAuth(app);
+export const db = getFirestore(app);
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' }, 
-  { path: 'home', component: HomeComponent } 
+  { path: 'home', component: HomeComponent },
+  { path: 'perfil', component: PerfilComponent },
+  { path: 'recuperar-password', component: RecuperarPasswordComponent },
+
 ];
 
 bootstrapApplication(AppComponent, {

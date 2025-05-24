@@ -12,10 +12,22 @@
       </div>
   
       <button type="submit" class="btn btn-primary">Ingresar</button>
+      <div class="auth-buttons">
+        <app-google-autenticacion></app-google-autenticacion>
+        <app-facebook-autenticacion></app-facebook-autenticacion>
+        <app-login-github></app-login-github>
+
+      </div>
+      <div>
+        <button (click)="irARecuperarPassword()" class="recuperar-btn">
+          ¿Olvidaste tu contraseña?
+        </button>
+      </div>
       <div class="register-link" >
         ¿No tienes cuenta?  
         <button routerLink="/register" class="btn btn-primary">Regístrate</button>
       </div>
+
     </form>
   </div>
   

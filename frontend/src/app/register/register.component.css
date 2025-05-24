@@ -1,77 +1,77 @@
 .register-container {
-    max-width: 420px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: #ffe6f0; /* rosado clarito */
-    border-radius: 16px;
-    box-shadow: 0 6px 12px rgba(255, 105, 180, 0.2); /* rosa intenso */
-  }
-  
-  h2 {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    color: #d63384; /* rosa fuerte */
-    font-family: 'Segoe UI', sans-serif;
-  }
-  
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  
-  label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-    color: #a03374;
-  }
-  
-  input {
-    width: 100%;
-    padding: 0.7rem;
-    border: 2px solid #f8b8d0;
-    border-radius: 10px;
-    font-size: 1rem;
-    background-color: #fff0f6;
-  }
-  
-  input:focus {
-    outline: none;
-    border-color: #ff69b4;
-    box-shadow: 0 0 5px #ffb6c1;
-  }
-  
-  button {
-    width: 100%;
-    padding: 0.8rem;
-    background-color: #ff69b4;
-    color: white;
-    font-weight: bold;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 1rem;
-  }
-  
-  button:hover {
-    background-color: #e055a2;
-  }
-  
-  p {
-    text-align: center;
-    margin-top: 1.2rem;
-    color: #7a2e5d;
-  }
-  
-  a {
-    color: #d63384;
-    cursor: pointer;
-    text-decoration: underline;
-    font-weight: 500;
-  }
-  
-  a:hover {
-    text-decoration: none;
-    color: #b81c6f;
-  }
-  
+  max-width: 420px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #f5f5f5; /* gris claro */
+  border-radius: 16px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* sombra neutra */
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #5d4037;;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color:#5d4037;;
+}
+
+input {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  background-color: #fff;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus {
+  outline: none;
+  border-color: #999;
+  box-shadow: 0 0 5px#5d4037(150, 150, 150, 0.3);
+}
+
+button {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #5d4037;; /* gris medio */
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+}
+
+button:hover {
+  background-color: #5d4037;/* gris más oscuro */
+}
+
+p {
+  text-align: center;
+  margin-top: 1.2rem;
+  color: #444;
+}
+
+a {
+  color: #5d4037;;
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: none;
+  color: #5d4037;;
+}

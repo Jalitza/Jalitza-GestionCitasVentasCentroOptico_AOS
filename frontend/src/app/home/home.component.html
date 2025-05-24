@@ -1,7 +1,38 @@
-<div class="home-container">
-    <h1>Bienvenido a la plataforma</h1>
-    <p>Gestiona tus citas y ventas de manera eficiente.</p>
-  
-    <button (click)="logout()" class="logout-btn">Cerrar Sesión</button>
-  </div>
-  
+<div class="contenedor-principal">
+  <header>
+    <div class="encabezado">
+      <h1>Centro Óptico PDN 👓</h1>
+      <p>Bienvenido, <span class="nombre-usuario">{{ usuario }}</span></p>
+    </div>
+  </header>
+
+  <nav>
+    <div class="navegacion">
+      <a routerLink="/citas">Citas</a>
+      <a routerLink="/ventas">Ventas</a>
+      <a routerLink="/clientes">Clientes</a>
+      <a routerLink="/historia-clinica">Historia Clínica</a>
+      <a routerLink="/perfil">Perfil</a>
+    </div>
+  </nav>
+
+  <main>
+    <h2>¿Qué deseas gestionar hoy?</h2>
+    <div class="grid-opciones">
+      <button>📅 Citas</button>
+      <button>🛍️ Ventas</button>
+      <button>🧑‍🤝‍🧑 Clientes</button>
+      <button>📝 Historia Clínica</button>
+      <button (click)="irAlPerfil()" >
+        Ir a gestión de usuarios
+      </button>
+
+    </div>
+  </main>
+
+  <footer>
+    Centro Óptico PDN © 2025 · Todos los derechos reservados
+    <br />
+    <button (click)="logout()">Cerrar Sesión</button>
+  </footer>
+</div>
