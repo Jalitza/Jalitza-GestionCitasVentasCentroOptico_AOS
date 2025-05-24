@@ -1,6 +1,6 @@
 /* Fondo general suave */
 body {
-  background: linear-gradient(to bottom, #ffe4e6, #ffffff, #fff1f2);
+  background: linear-gradient(to bottom, #f7f1ec, #fffefa, #fdf9f6); /* tonos beige claro */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
@@ -8,7 +8,7 @@ body {
 
 /* Encabezado */
 header {
-  background-color: #ec4899; /* fucsia/rosado intenso */
+  background-color: #8d6e63; /* marrón medio */
   color: white;
   padding: 24px 0;
   text-align: center;
@@ -27,7 +27,7 @@ header p {
 
 /* Navegación */
 nav {
-  background-color: #fce7f3;
+  background-color: #e6ddd9; /* beige grisáceo */
   padding: 16px 0;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   text-align: center;
@@ -35,14 +35,14 @@ nav {
 
 nav a {
   margin: 0 20px;
-  color: #be185d;
+  color: #6d4c41; /* marrón oscuro */
   font-weight: 500;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 nav a:hover {
-  color: #831843;
+  color: #5d4037; /* marrón más oscuro */
 }
 
 /* Contenido principal */
@@ -54,7 +54,7 @@ main {
 }
 
 main h2 {
-  color: #be185d;
+  color: #6d4c41;
   font-size: 2rem;
   font-weight: 600;
   margin-bottom: 32px;
@@ -71,8 +71,8 @@ main .grid {
 
 main button {
   background-color: white;
-  border: 2px solid #f9a8d4;
-  color: #be185d;
+  border: 2px solid #a1887f; /* marrón claro */
+  color: #6d4c41;
   font-weight: 600;
   padding: 24px;
   border-radius: 1rem;
@@ -83,23 +83,23 @@ main button {
 }
 
 main button:hover {
-  background-color: #ffe4e6;
-  border-color: #ec4899;
+  background-color: #f5f0ec; /* beige claro */
+  border-color: #8d6e63;
   transform: translateY(-2px);
 }
 
 /* Footer */
 footer {
-  background-color: #fce7f3;
+  background-color: #e6ddd9;
   text-align: center;
   padding: 16px;
-  color: #9d174d;
+  color: #6d4c41;
   font-size: 0.9rem;
 }
 
 footer button {
   margin-top: 8px;
-  color: #dc2626;
+  color: #5d4037;
   background: none;
   border: none;
   cursor: pointer;

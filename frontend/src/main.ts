@@ -11,6 +11,7 @@ import { LoginComponent } from './app/login/login.component';
 import { RegisterComponent } from './app/register/register.component';
 import { HomeComponent } from './app/home/home.component';
 import { PerfilComponent } from './app/perfil/perfil.component';
+
 import { RecuperarPasswordComponent } from './app/recuperar-password/recuperar-password.component';
 
 

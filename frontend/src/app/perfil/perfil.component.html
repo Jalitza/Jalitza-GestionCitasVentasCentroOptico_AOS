@@ -1,19 +1,41 @@
-<div class="perfil-container">
-  <h2>Mi Perfil</h2>
+<div class="contenedor-usuarios">
+  <div class="cabecera-usuarios">
+    <h2>Usuarios registrados</h2>
+    <button class="boton-nuevo-usuario" (click)="abrirFormulario()">+ Nuevo usuario</button>
+  </div>
 
-  <label>Nombre:</label>
-  <input [(ngModel)]="nombre" type="text" />
-
-  <button (click)="actualizarNombre()">Actualizar Nombre</button>
-
-  <p><strong>Correo:</strong> {{ email }}</p>
-
-  <label>Nueva Contraseña:</label>
-  <input [(ngModel)]="nuevaContrasena" type="password" />
-
-  <button (click)="actualizarContrasena()">Actualizar Contraseña</button>
-
-  <hr />
-
-  <button class="delete-btn" (click)="eliminarCuenta()">Eliminar Cuenta</button>
+  <div class="tabla-wrapper">
+    <table class="tabla-usuarios">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Proveedor</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let usuario of usuarios">
+          <td>{{ usuario.nombre }}</td>
+          <td class="correo-columna">{{ usuario.correo }}</td>
+          <td>
+            <ng-container [ngSwitch]="usuario.proveedor">
+              <i *ngSwitchCase="'facebook'" class="fa-brands fa-facebook" style="color:#3b5998"></i>
+              <i *ngSwitchCase="'google'" class="fa-brands fa-google" style="color:#db4437"></i>
+              <i *ngSwitchCase="'github'" class="fa-brands fa-github" style="color:#24292e"></i>
+              <i *ngSwitchCase="'email'" class="fa-solid fa-envelope" style="color:#6d4c41"></i>
+            </ng-container>
+          </td>
+          <td class="acciones-usuario">
+            <button (click)="editarUsuario(usuario)" aria-label="Editar usuario">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+            <button (click)="eliminarUsuario(usuario.id!)" aria-label="Eliminar usuario">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
