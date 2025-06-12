@@ -1,35 +1,84 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormsModule, NgForm } from '@angular/forms';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { UsuariosService } from '../servicios/usuarios.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-  name: string = '';
-  lastname: string = '';
-  email: string = '';
-  phone: string = '';
-  password: string = '';
+  @ViewChild('registerForm') registerForm!: NgForm;
 
-  constructor(private router: Router) {}
+  usuario = {
+    nombre: '',
+    apellido: '',
+    email: '',
+    telefono: '',
+    contrasena: '',
+    confirmarContrasena: ''
+  };
 
-  register() {
-    const auth = getAuth();
-    createUserWithEmailAndPassword(auth, this.email, this.password)
-      .then((userCredential) => {
-        alert('✅ Registro exitoso'); // 
-        console.log('Usuario registrado:', userCredential.user);
-        this.router.navigate(['/login']); // 
-      })
-      .catch((error) => {
-        alert('❌ Error en el registro: ' + error.message); 
-      });
+  loading: boolean = false;
+  errorMessage: string | null = null;
+
+  constructor(
+    private router: Router,
+    private usuariosService: UsuariosService
+  ) {}
+
+  async registrar() {
+    if (this.registerForm.invalid) return;
+    if (this.usuario.contrasena !== this.usuario.confirmarContrasena) {
+      this.errorMessage = 'Las contraseñas no coinciden';
+      return;
+    }
+
+    this.loading = true;
+    this.errorMessage = null;
+
+    try {
+      const auth = getAuth();
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        this.usuario.email,
+        this.usuario.contrasena
+      );
+
+      // Pasar el objeto User directamente y los datos adicionales
+      await this.usuariosService.guardarUsuarioSiNoExiste(
+        userCredential.user,
+        {
+          nombre: this.usuario.nombre,
+          apellido: this.usuario.apellido,
+          telefono: this.usuario.telefono
+        }
+      );
+      
+      this.registerForm.resetForm();
+      this.router.navigate(['/home']);
+    } catch (error: any) {
+      console.error('Error en registro:', error);
+      this.errorMessage = this.getErrorMessage(error);
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  private getErrorMessage(error: any): string {
+    const errorMap: Record<string, string> = {
+      'auth/email-already-in-use': 'El correo electrónico ya está registrado',
+      'auth/invalid-email': 'Correo electrónico inválido',
+      'auth/weak-password': 'La contraseña debe tener al menos 6 caracteres',
+      'auth/operation-not-allowed': 'Operación no permitida',
+      'firestore/set-doc-error': 'Error al guardar los datos del usuario'
+    };
+    return errorMap[error.code] || 'Error en el registro. Por favor intenta nuevamente.';
   }
 
   redirectToLogin() {

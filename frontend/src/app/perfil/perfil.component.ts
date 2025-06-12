@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
-import { db } from '../../main'; 
+import { Router } from '@angular/router';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { db } from '../../main';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { UsuariosService } from '../servicios/usuarios.service';
 
 @Component({
   selector: 'app-perfil',
@@ -12,77 +15,85 @@ import { db } from '../../main';
   styleUrls: ['./perfil.component.css']
 })
 export class PerfilComponent implements OnInit {
-  usuarios: any[] = [];
-  nombre: string = '';
-  correo: string = '';
-  proveedor: string = '';
-  idUsuario?: string;
-  formularioVisible: boolean = false;
+  usuario = {
+    nombre: '',
+    apellido: '',
+    email: '',
+    telefono: '',
+    proveedor: 'email',
+    photoURL: ''
+  };
+
   editando: boolean = false;
+  loading: boolean = true;
+  auth = getAuth();
+  uid: string | null = null;
+
+  constructor(
+    private usuariosService: UsuariosService,
+    private router: Router
+  ) {}
 
   async ngOnInit() {
-    await this.cargarUsuarios();
+    onAuthStateChanged(this.auth, async (user) => {
+      if (user) {
+        this.uid = user.uid;
+        await this.cargarDatosUsuario();
+      } else {
+        this.router.navigate(['/login']);
+      }
+      this.loading = false;
+    });
   }
+  async cargarDatosUsuario() {
+    if (!this.uid) return;
 
-  async cargarUsuarios() {
-    const querySnapshot = await getDocs(collection(db, 'usuarios'));
-    this.usuarios = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-  }
-
-  abrirFormulario() {
-    this.editando = false;
-    this.formularioVisible = true;
-    this.nombre = '';
-    this.correo = '';
-    this.proveedor = '';
-  }
-
-  async guardarUsuario() {
-    if (this.editando && this.idUsuario) {
-      const usuarioRef = doc(db, 'usuarios', this.idUsuario);
-      await updateDoc(usuarioRef, {
-        nombre: this.nombre,
-        correo: this.correo,
-        proveedor: this.proveedor
-      });
-    } else {
-      await addDoc(collection(db, 'usuarios'), {
-        nombre: this.nombre,
-        correo: this.correo,
-        proveedor: this.proveedor
-      });
+    try {
+      const usuarioData = await this.usuariosService.obtenerUsuario(this.uid);
+      if (usuarioData) {
+        this.usuario = {
+          nombre: usuarioData.nombre,
+          apellido: usuarioData.apellido,
+          email: usuarioData.email,
+          telefono: usuarioData.telefono || '',
+          proveedor: usuarioData.proveedor,
+          photoURL: usuarioData.photoURL || ''
+        };
+      }
+    } catch (error) {
+      console.error('Error cargando datos:', error);
+      alert('Error al cargar los datos del usuario');
     }
-
-    this.formularioVisible = false;
-    this.nombre = '';
-    this.correo = '';
-    this.proveedor = '';
-    this.editando = false;
-    this.idUsuario = undefined;
-
-    await this.cargarUsuarios();
   }
 
-  editarUsuario(usuario: any) {
-    this.nombre = usuario.nombre;
-    this.correo = usuario.correo;
-    this.proveedor = usuario.proveedor;
-    this.idUsuario = usuario.id;
-    this.formularioVisible = true;
+  iniciarEdicion() {
     this.editando = true;
   }
 
-  async eliminarUsuario(id: string) {
-    await deleteDoc(doc(db, 'usuarios', id));
-    await this.cargarUsuarios();
-  }
-
-  cancelar() {
-    this.formularioVisible = false;
+  cancelarEdicion() {
     this.editando = false;
-    this.idUsuario = undefined;
+    this.cargarDatosUsuario();
+  }  async guardarCambios() {
+    if (!this.uid) return;
+
+    try {
+      await this.usuariosService.actualizarUsuario({
+        uid: this.uid,
+        email: this.usuario.email,
+        nombre: this.usuario.nombre,
+        apellido: this.usuario.apellido,
+        telefono: this.usuario.telefono,
+        photoURL: this.usuario.photoURL,
+        proveedor: this.usuario.proveedor as 'email' | 'google' | 'facebook' | 'github',
+        fechaCreacion: new Date().toISOString(), // Will be ignored on update
+        ultimoAcceso: new Date().toISOString()
+      });
+      
+      alert('Perfil actualizado correctamente');
+      this.editando = false;
+    } catch (error) {
+      console.error('Error actualizando perfil:', error);
+      alert('Error al actualizar el perfil');
+    }
   }
 }
