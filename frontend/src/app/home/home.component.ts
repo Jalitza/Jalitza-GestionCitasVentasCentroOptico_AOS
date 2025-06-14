@@ -8,7 +8,8 @@ import { getAuth, signOut } from 'firebase/auth';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  usuario: string = ''; 
+  usuario: string = '';
+  esAdmin: boolean = false; // Nueva propiedad para control de acceso
 
   constructor(private router: Router) {}
 
@@ -19,10 +20,19 @@ export class HomeComponent implements OnInit {
     if (user) {
       this.usuario = user.displayName || 'Usuario';
       console.log('Usuario autenticado:', this.usuario);
+      // Verificar si es administrador (ajusta según tu lógica)
+      this.esAdmin = this.verificarAdmin(user);
     } else {
       console.warn('No hay usuario autenticado');
       this.usuario = 'Usuario';
     }
+  }
+
+  private verificarAdmin(user: any): boolean {
+    // Implementa tu lógica para verificar si es admin
+    // Ejemplo básico:
+    return user.email === 'admin@opticopdn.com';
+    // En una app real, deberías verificar claims o roles en Firebase
   }
 
   logout(): void {
@@ -35,7 +45,15 @@ export class HomeComponent implements OnInit {
     });
   }
 
-irAlPerfil() {
-  this.router.navigate(['/perfil']);
-}
+  irAlPerfil() {
+    this.router.navigate(['/perfil']);
+  }
+
+  irAlAdministrador() {
+    this.router.navigate(['/admin/usuarios']); // Asegúrate que coincide con tu ruta
+  }
+
+  irAlHistorial() {
+    this.router.navigate(['/historial']);
+  }
 }

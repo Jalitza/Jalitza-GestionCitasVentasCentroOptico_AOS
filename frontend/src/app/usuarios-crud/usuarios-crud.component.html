@@ -1,0 +1,119 @@
+<div class="container">
+  <h2>Administración de Usuarios</h2>
+
+  <div class="mb-3">
+    <button class="btn btn-primary" (click)="toggleAgregarUsuario()">
+      {{ mostrarFormularioAgregar ? 'Cancelar' : 'Agregar Usuario' }}
+    </button>
+  </div>
+
+  <!-- Formulario para agregar nuevo usuario -->
+  <div *ngIf="mostrarFormularioAgregar" class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Agregar Nuevo Usuario</h5>
+      
+      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+      
+      <form (ngSubmit)="agregarUsuario()">
+        <div class="mb-3">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input type="text" class="form-control" id="nombre" [(ngModel)]="nuevoUsuario.nombre" name="nombre">
+        </div>
+        
+        <div class="mb-3">
+          <label for="apellido" class="form-label">Apellido</label>
+          <input type="text" class="form-control" id="apellido" [(ngModel)]="nuevoUsuario.apellido" name="apellido">
+        </div>
+        
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="email" [(ngModel)]="nuevoUsuario.email" name="email" required>
+        </div>
+        
+        <div class="mb-3">
+          <label for="telefono" class="form-label">Teléfono</label>
+          <input type="text" class="form-control" id="telefono" [(ngModel)]="nuevoUsuario.telefono" name="telefono">
+        </div>
+        
+        <div class="mb-3">
+          <label for="contrasena" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" id="contrasena" [(ngModel)]="nuevoUsuario.contrasena" name="contrasena" required>
+        </div>
+        
+        <div class="mb-3">
+          <label for="confirmarContrasena" class="form-label">Confirmar Contraseña</label>
+          <input type="password" class="form-control" id="confirmarContrasena" [(ngModel)]="nuevoUsuario.confirmarContrasena" name="confirmarContrasena" required>
+        </div>
+        
+        <button type="submit" class="btn btn-success" [disabled]="loading">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          {{ loading ? 'Registrando...' : 'Registrar Usuario' }}
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="loading && !mostrarFormularioAgregar" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error && !mostrarFormularioAgregar" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !modoEdicion && !mostrarFormularioAgregar">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Proveedor</th>
+          <th>Teléfono</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let usuario of usuarios">
+          <td>{{ usuario.nombre }} {{ usuario.apellido }}</td>
+          <td>{{ usuario.email || 'No especificado' }}</td>
+          <td>{{ usuario.proveedor }}</td>
+          <td>{{ usuario.telefono || 'No especificado' }}</td>
+          <td>
+            <button (click)="editarUsuario(usuario)" class="btn btn-primary btn-sm">Editar</button>
+            <button (click)="eliminarUsuario(usuario.uid)" class="btn btn-danger btn-sm">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="modoEdicion && usuarioEditando" class="card mt-4">
+    <div class="card-body">
+      <h3 class="card-title">Editar Usuario</h3>
+      <form (ngSubmit)="guardarCambios()">
+        <div class="mb-3">
+          <label class="form-label">Nombre:</label>
+          <input [(ngModel)]="usuarioEditando.nombre" name="nombre" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Apellido:</label>
+          <input [(ngModel)]="usuarioEditando.apellido" name="apellido" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email:</label>
+          <input [(ngModel)]="usuarioEditando.email" name="email" class="form-control" type="email" disabled>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Teléfono:</label>
+          <input [(ngModel)]="usuarioEditando.telefono" name="telefono" class="form-control" type="tel">
+        </div>
+        <div class="d-flex gap-2">
+          <button type="button" (click)="cancelarEdicion()" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,154 @@
+<div class="container">
+  <h2 class="mb-4">
+    Historial de Accesos
+    <span *ngIf="filtrosActivos" class="badge bg-info ms-2">
+      Filtros activos
+      <span *ngIf="fechaSeleccionada"> | Día: {{ formatearFechaCorta(fechaSeleccionada) }}</span>
+      <button class="btn-close btn-close-white btn-sm ms-2" (click)="limpiarFiltros()"></button>
+    </span>
+  </h2>
+  
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <input type="text" class="form-control" 
+                 placeholder="Filtrar por email, nombre o dispositivo..." 
+                 [(ngModel)]="filtro"
+                 (input)="actualizarEstadoFiltros()">
+        </div>
+        <div class="col-md-6 text-end">
+          <button class="btn btn-secondary" (click)="limpiarFiltros()" 
+                  [disabled]="!filtrosActivos">
+            <i class="bi bi-x-circle me-1"></i> Limpiar filtros
+          </button>
+          <button class="btn btn-primary ms-2" (click)="toggleFiltroFecha()">
+            <i class="bi bi-calendar3 me-1"></i>
+            {{ mostrarFiltroFecha ? 'Ocultar fecha' : 'Filtrar por día' }}
+          </button>
+          <button class="btn btn-outline-primary ms-2" (click)="cargarHistorial()">
+            <i class="bi bi-arrow-clockwise me-1"></i> Actualizar
+          </button>
+        </div>
+      </div>
+
+      <!-- Filtro de fecha específica -->
+      <div class="row mt-3" *ngIf="mostrarFiltroFecha">
+        <div class="col-md-4">
+          <label class="form-label">Seleccionar día:</label>
+          <input type="date" class="form-control" 
+                 [(ngModel)]="fechaSeleccionada"
+                 (change)="onFechaChange()">
+        </div>
+        <div class="col-md-8 d-flex align-items-end">
+          <small class="text-muted">
+            Mostrará todos los accesos del día seleccionado (hora local UTC-5)
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2">Cargando historial...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    {{ error }}
+    <button class="btn btn-sm btn-outline-danger ms-3" (click)="cargarHistorial()">
+      Reintentar
+    </button>
+  </div>
+
+  <div *ngIf="!loading && accesos.length > 0" class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Usuario</th>
+          <th>Email</th>
+          <th>Método</th>
+          <th>Dispositivo</th>
+          <th>Fecha/Hora (Local)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let acceso of accesosPaginados">
+          <td>{{ acceso.nombre || 'N/A' }}</td>
+          <td>{{ acceso.email || 'N/A' }}</td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'bg-primary': acceso.proveedor === 'email',
+              'bg-danger': acceso.proveedor === 'google',
+              'bg-info': acceso.proveedor === 'facebook',
+              'bg-dark': acceso.proveedor === 'github'
+            }">
+              {{ acceso.proveedor | uppercase }}
+            </span>
+          </td>
+          <td>{{ acceso.dispositivo }}</td>
+          <td>{{ formatearFecha(acceso.fechaAcceso) }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Paginación -->
+    <div class="d-flex justify-content-between align-items-center mt-3">
+      <div class="d-flex align-items-center">
+        <span class="me-2">Mostrar:</span>
+        <select class="form-select form-select-sm" style="width: auto;" 
+                [(ngModel)]="itemsPorPagina" (change)="cambiarItemsPorPagina()">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+        <span class="ms-2">registros por página</span>
+      </div>
+
+      <div class="d-flex align-items-center">
+        <span class="me-3">
+          Mostrando {{ (paginaActual - 1) * itemsPorPagina + 1 }} - 
+          {{ Math.min(paginaActual * itemsPorPagina, accesosFiltrados.length) }} 
+          de {{ accesosFiltrados.length }} registros
+        </span>
+
+        <nav>
+          <ul class="pagination mb-0">
+            <li class="page-item" [class.disabled]="paginaActual === 1">
+              <a class="page-link" (click)="cambiarPagina(1)">«</a>
+            </li>
+            <li class="page-item" [class.disabled]="paginaActual === 1">
+              <a class="page-link" (click)="cambiarPagina(paginaActual - 1)">‹</a>
+            </li>
+
+            <li class="page-item" *ngFor="let pagina of paginas" 
+                [class.active]="pagina === paginaActual">
+              <a class="page-link" (click)="cambiarPagina(pagina)">{{ pagina }}</a>
+            </li>
+
+            <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+              <a class="page-link" (click)="cambiarPagina(paginaActual + 1)">›</a>
+            </li>
+            <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+              <a class="page-link" (click)="cambiarPagina(totalPaginas)">»</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && accesos.length === 0" class="alert alert-info">
+    <i class="bi bi-info-circle-fill me-2"></i>
+    No hay registros de acceso disponibles
+  </div>
+
+  <div *ngIf="!loading && accesosFiltrados.length === 0 && accesos.length > 0" class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    No se encontraron resultados con los filtros aplicados
+  </div>
+</div>
