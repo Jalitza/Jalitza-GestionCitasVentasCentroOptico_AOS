@@ -6,6 +6,7 @@ import { GoogleAutenticacionComponent } from '../google-autenticacion/google-aut
 import { GithubAutenticacionComponent } from '../github-autenticacion/github-autenticacion.component';
 import { FacebookAutenticacionComponent } from "../facebook-autenticacion/facebook-autenticacion.component";
 import { RecuperarPasswordComponent } from '../recuperar-password/recuperar-password.component';
+import { UsuariosService } from '../servicios/usuarios.service';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,10 @@ export class LoginComponent {
   password: string = '';
   isLoading: boolean = false;
 
-  constructor(private router: Router) {} 
+  constructor(
+    private router: Router,
+    private usuariosService: UsuariosService
+  ) {}
 
   async login() {
     if (!this.email || !this.password) {
@@ -44,27 +48,67 @@ export class LoginComponent {
         this.password
       );
       
-      console.log('✅ Inicio de sesión exitoso:', userCredential.user);
+      // Get display name from user or use email prefix as fallback
+      const displayName = userCredential.user.displayName || 
+                        this.email.split('@')[0] || 
+                        'Usuario';
+      
+      // Registrar usuario y acceso
+      await this.usuariosService.guardarUsuarioSiNoExiste(userCredential.user);
+      await this.usuariosService.registrarAcceso(userCredential.user, displayName);
+      
       this.router.navigate(['/home']);
       
     } catch (error: any) {
-      console.error('❌ Error al iniciar sesión:', error);
+      console.error('Error al iniciar sesión:', error);
       alert(this.getErrorMessage(error));
-      
     } finally {
       this.isLoading = false;
     }
   }
 
-  private getErrorMessage(error: any): string {
+  // Métodos para autenticación social
+  onGoogleLoginSuccess(user: any) {
+    this.handleSocialLogin(user);
+  }
+
+  onGithubLoginSuccess(user: any) {
+    this.handleSocialLogin(user);
+  }
+
+  onFacebookLoginSuccess(user: any) {
+    this.handleSocialLogin(user);
+  }
+
+  private async handleSocialLogin(user: any) {
+    try {
+      const displayName = user.displayName || 'Usuario Social';
+      await this.usuariosService.guardarUsuarioSiNoExiste(user);
+      await this.usuariosService.registrarAcceso(user, displayName);
+      this.router.navigate(['/home']);
+    } catch (error) {
+      console.error('Error en login social:', error);
+      alert('Error al iniciar sesión con red social');
+    }
+  }
+
+  private getErrorMessage(error: { code?: string; message?: string }): string {
     const errorMap: Record<string, string> = {
       'auth/invalid-email': 'Correo electrónico inválido',
       'auth/user-disabled': 'Cuenta deshabilitada',
       'auth/user-not-found': 'Usuario no encontrado',
       'auth/wrong-password': 'Contraseña incorrecta',
-      'auth/too-many-requests': 'Demasiados intentos. Intenta más tarde'
+      'auth/too-many-requests': 'Demasiados intentos. Intenta más tarde',
+      'auth/network-request-failed': 'Error de conexión. Verifica tu internet',
+      'auth/email-already-in-use': 'El correo ya está registrado',
+      'auth/weak-password': 'La contraseña debe tener al menos 6 caracteres'
     };
-    return errorMap[error.code] || 'Error al iniciar sesión. Por favor intenta nuevamente.';
+
+    if (error.code && typeof error.code === 'string' && error.code in errorMap) {
+      return errorMap[error.code];
+    }
+    
+    return error.message || 'Error al iniciar sesión. Por favor intenta nuevamente.';
   }
 
   irARecuperarPassword() {

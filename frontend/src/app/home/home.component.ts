@@ -52,4 +52,8 @@ export class HomeComponent implements OnInit {
   irAlAdministrador() {
     this.router.navigate(['/admin/usuarios']); // Asegúrate que coincide con tu ruta
   }
+
+  irAlHistorial() {
+    this.router.navigate(['/historial']);
+  }
 }

@@ -29,21 +29,23 @@ export class GithubAutenticacionComponent {
       const tokenResponse = (result as any)._tokenResponse;
       const githubInfo = tokenResponse?.rawUserInfo ? JSON.parse(tokenResponse.rawUserInfo) : {};
 
-      // Verificar que tenemos email (requerido)
       const email = user.email || tokenResponse?.email || githubInfo?.email;
       if (!email) {
         throw new Error('No se pudo obtener el correo electrónico de GitHub');
       }
 
-      // Usar el servicio actualizado
+      const displayName = githubInfo?.name || user.displayName || 'Usuario GitHub';
+      
       await this.usuariosService.guardarUsuarioSiNoExiste(user, {
-        nombre: githubInfo?.name || user.displayName?.split(' ')[0] || '',
-        apellido: user.displayName?.split(' ').slice(1).join(' ') || '',
-        telefono: '' // Opcional: puedes obtenerlo de otra fuente si es necesario
+        nombre: displayName.split(' ')[0] || '',
+        apellido: displayName.split(' ').slice(1).join(' ') || '',
+        telefono: ''
       });
+      
+      await this.usuariosService.registrarAcceso(user, displayName); // Added displayName as second argument
 
       console.log('✅ Sesión iniciada con GitHub:', user);
-      alert(`Bienvenido/a ${user.displayName || 'Usuario GitHub'}`);
+      alert(`Bienvenido/a ${displayName}`);
       this.router.navigate(['/home']);
 
     } catch (error: any) {
@@ -68,7 +70,9 @@ export class GithubAutenticacionComponent {
         const googleResult = await signInWithPopup(auth, googleProvider);
         await linkWithCredential(googleResult.user, pendingCred!);
         
+        const displayName = googleResult.user.displayName || 'Usuario Google';
         await this.usuariosService.guardarUsuarioSiNoExiste(googleResult.user);
+        await this.usuariosService.registrarAcceso(googleResult.user, displayName); // Added displayName as second argument
         alert('¡Cuenta de GitHub vinculada con éxito!');
         this.router.navigate(['/home']);
       } catch (linkError) {

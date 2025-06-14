@@ -21,7 +21,7 @@ export class GoogleAutenticacionComponent {
     provider.setCustomParameters({
       prompt: 'select_account',
       login_hint: '',
-      'include_granted_scopes': 'true'
+      include_granted_scopes: 'true'
     });
 
     const auth = getAuth();
@@ -29,23 +29,45 @@ export class GoogleAutenticacionComponent {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
+      
+      
+      const email = user.email || 
+                  (result as any)?.user?.email || 
+                  (result as any)?._tokenResponse?.email;
 
-      if (!user.email) {
-        throw new Error('No se pudo obtener el correo electrónico de Google');
+      if (!email) {
+        throw new Error('No se pudo obtener el correo electrónico. Verifica que has concedido los permisos necesarios.');
       }
 
-      // Usar el servicio actualizado pasando el objeto User directamente
+      
+      const displayName = user.displayName || '';
+      const [nombre, ...apellidos] = displayName.split(' ');
+      const apellido = apellidos.join(' ');
+
       await this.usuariosService.guardarUsuarioSiNoExiste(user, {
-        nombre: user.displayName?.split(' ')[0] || '',
-        apellido: user.displayName?.split(' ').slice(1).join(' ') || ''
+        nombre: nombre || '',
+        apellido: apellido || ''
       });
+      
+      await this.usuariosService.registrarAcceso(
+        user, 
+        displayName // 
+      );
 
       console.log('✅ Sesión iniciada con Google:', user);
-      alert(`Bienvenido/a ${user.displayName || 'Usuario Google'}`);
+      alert(`Bienvenido/a ${displayName || 'Usuario Google'}`);
       this.router.navigate(['/home']);
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Error al iniciar sesión con Google:', error);
-      alert('Error: ' + (error as Error).message);
+      
+      let errorMessage = 'Error al iniciar sesión con Google';
+      if (error.code === 'auth/popup-closed-by-user') {
+        errorMessage = 'El popup de autenticación fue cerrado antes de completar el proceso';
+      } else if (error.message.includes('correo electrónico')) {
+        errorMessage = error.message;
+      }
+      
+      alert(errorMessage);
     }
   }
 }

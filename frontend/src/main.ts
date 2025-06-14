@@ -13,7 +13,7 @@ import { HomeComponent } from './app/home/home.component';
 import { PerfilComponent } from './app/perfil/perfil.component';
 import { RecuperarPasswordComponent } from './app/recuperar-password/recuperar-password.component';
 import { UsuariosCrudComponent } from './app/usuarios-crud/usuarios-crud.component'; // Nueva importación
-
+import { HistorialComponent  } from  './app/historial/historial.component';
 const firebaseConfig = {
   apiKey: "AIzaSyB9Kk7S_QFpe9dJHdxTFH1KIMNtze2B4Qw",
   authDomain: "aosgc-jc.firebaseapp.com",
@@ -39,7 +39,8 @@ const routes: Routes = [
     path: 'admin/usuarios', 
     component: UsuariosCrudComponent,
     // canActivate: [AuthGuard] // Descomenta cuando tengas el guard implementado
-  }
+  },
+  {path: 'historial', component: HistorialComponent}, // Nueva ruta para Historial
   
 ];
 

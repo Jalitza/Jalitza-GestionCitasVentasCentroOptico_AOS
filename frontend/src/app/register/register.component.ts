@@ -33,9 +33,18 @@ export class RegisterComponent {
   ) {}
 
   async registrar() {
-    if (this.registerForm.invalid) return;
+    if (this.registerForm.invalid) {
+      this.errorMessage = 'Por favor completa todos los campos requeridos';
+      return;
+    }
+
     if (this.usuario.contrasena !== this.usuario.confirmarContrasena) {
       this.errorMessage = 'Las contraseñas no coinciden';
+      return;
+    }
+
+    if (this.usuario.contrasena.length < 6) {
+      this.errorMessage = 'La contraseña debe tener al menos 6 caracteres';
       return;
     }
 
@@ -50,7 +59,7 @@ export class RegisterComponent {
         this.usuario.contrasena
       );
 
-      // Pasar el objeto User directamente y los datos adicionales
+      // Guardar usuario en Firestore con datos adicionales
       await this.usuariosService.guardarUsuarioSiNoExiste(
         userCredential.user,
         {
@@ -59,8 +68,15 @@ export class RegisterComponent {
           telefono: this.usuario.telefono
         }
       );
-      
+
+      // Registrar el acceso en historial-acceso con el nombre del formulario
+      await this.usuariosService.registrarAcceso(
+        userCredential.user,
+        this.usuario.nombre  // Pasamos el nombre explícitamente
+      );
+
       this.registerForm.resetForm();
+      alert(`Registro exitoso. Bienvenido ${this.usuario.nombre}!`);
       this.router.navigate(['/home']);
     } catch (error: any) {
       console.error('Error en registro:', error);
@@ -76,6 +92,7 @@ export class RegisterComponent {
       'auth/invalid-email': 'Correo electrónico inválido',
       'auth/weak-password': 'La contraseña debe tener al menos 6 caracteres',
       'auth/operation-not-allowed': 'Operación no permitida',
+      'auth/network-request-failed': 'Error de conexión. Verifica tu internet',
       'firestore/set-doc-error': 'Error al guardar los datos del usuario'
     };
     return errorMap[error.code] || 'Error en el registro. Por favor intenta nuevamente.';

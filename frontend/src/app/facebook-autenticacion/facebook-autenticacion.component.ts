@@ -16,26 +16,27 @@ export class FacebookAutenticacionComponent {
   ) {}
 
   async loginWithFacebook() {
-    const provider = new FacebookAuthProvider();
-    provider.addScope('email');
-    provider.addScope('public_profile');
-    provider.setCustomParameters({
-      'display': 'popup'
-    });
-    const auth = getAuth();
+  const provider = new FacebookAuthProvider();
+  provider.addScope('email');
+  provider.addScope('public_profile');
+  provider.setCustomParameters({
+    'display': 'popup'
+  });
+  const auth = getAuth();
 
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
 
-      await this.usuariosService.guardarUsuarioSiNoExiste(user);
+    await this.usuariosService.guardarUsuarioSiNoExiste(user);
+    await this.usuariosService.registrarAcceso(user, user.displayName || ''); // Added user.displayName as second argument
 
-      console.log('✅ Usuario autenticado y guardado en Firestore:', user);
-      alert('Bienvenido/a ' + user.displayName);
-      this.router.navigate(['/home']);
-    } catch (error) {
-      console.error('❌ Error en la autenticación con Facebook:', error);
-      alert('Error: ' + (error as Error).message);
-    }
+    console.log('✅ Usuario autenticado y guardado en Firestore:', user);
+    alert('Bienvenido/a ' + user.displayName);
+    this.router.navigate(['/home']);
+  } catch (error) {
+    console.error('❌ Error en la autenticación con Facebook:', error);
+    alert('Error: ' + (error as Error).message);
   }
+}
 }

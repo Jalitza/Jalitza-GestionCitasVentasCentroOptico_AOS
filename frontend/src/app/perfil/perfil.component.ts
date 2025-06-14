@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { db } from '../../main';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { UsuariosService } from '../servicios/usuarios.service';
+import { Timestamp } from 'firebase/firestore';
 
 @Component({
   selector: 'app-perfil',
@@ -20,7 +19,7 @@ export class PerfilComponent implements OnInit {
     apellido: '',
     email: '',
     telefono: '',
-    proveedor: 'email',
+    proveedor: 'email' as 'email' | 'google' | 'facebook' | 'github',
     photoURL: ''
   };
 
@@ -45,6 +44,7 @@ export class PerfilComponent implements OnInit {
       this.loading = false;
     });
   }
+
   async cargarDatosUsuario() {
     if (!this.uid) return;
 
@@ -73,7 +73,9 @@ export class PerfilComponent implements OnInit {
   cancelarEdicion() {
     this.editando = false;
     this.cargarDatosUsuario();
-  }  async guardarCambios() {
+  }
+
+  async guardarCambios() {
     if (!this.uid) return;
 
     try {
@@ -84,13 +86,14 @@ export class PerfilComponent implements OnInit {
         apellido: this.usuario.apellido,
         telefono: this.usuario.telefono,
         photoURL: this.usuario.photoURL,
-        proveedor: this.usuario.proveedor as 'email' | 'google' | 'facebook' | 'github',
-        fechaCreacion: new Date().toISOString(), // Will be ignored on update
-        ultimoAcceso: new Date().toISOString()
+        proveedor: this.usuario.proveedor,
+        fechaCreacion: null, // El servicio manejará esto
+        ultimoAcceso: null  // Se actualizará automáticamente con serverTimestamp()
       });
       
       alert('Perfil actualizado correctamente');
       this.editando = false;
+      await this.cargarDatosUsuario(); // Recargar datos actualizados
     } catch (error) {
       console.error('Error actualizando perfil:', error);
       alert('Error al actualizar el perfil');
