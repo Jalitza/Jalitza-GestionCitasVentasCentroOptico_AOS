@@ -19,14 +19,17 @@
   <main>
     <h2>¿Qué deseas gestionar hoy?</h2>
     <div class="grid-opciones">
-      <button>📅 Citas</button>
-      <button>🛍️ Ventas</button>
-      <button>🧑‍🤝‍🧑 Clientes</button>
-      <button>📝 Historia Clínica</button>
-      <button (click)="irAlPerfil()" >
-        Ir a gestión de usuarios
+      <button routerLink="/citas">📅 Citas</button>
+      <button routerLink="/ventas">🛍️ Ventas</button>
+      <button routerLink="/clientes">🧑‍🤝‍🧑 Clientes</button>
+      <button routerLink="/historia-clinica">📝 Historia Clínica</button>
+      <button  (click)="irAlPerfil()">👤 Perfil</button>
+      <button (click)="irAlAdministrador()" >
+        👥 Administrar Usuarios
       </button>
-
+      <button (click)="irAlHistorial()" >
+        📜 Historial de accesos
+      </button>
     </div>
   </main>
 

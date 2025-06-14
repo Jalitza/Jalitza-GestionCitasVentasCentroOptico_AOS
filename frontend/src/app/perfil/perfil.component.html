@@ -1,41 +1,66 @@
-<div class="contenedor-usuarios">
-  <div class="cabecera-usuarios">
-    <h2>Usuarios registrados</h2>
-    <button class="boton-nuevo-usuario" (click)="abrirFormulario()">+ Nuevo usuario</button>
+<div class="profile-container" *ngIf="!loading">
+  <div *ngIf="!editando">
+    <h2>Mi Perfil</h2>
+    
+    <div class="profile-info">
+      <div class="avatar" *ngIf="usuario.photoURL">
+        <img [src]="usuario.photoURL" alt="Foto de perfil" class="profile-image">
+      </div>
+      
+      <div class="info-group">
+        <label>Nombre:</label>
+        <p>{{usuario.nombre}} {{usuario.apellido}}</p>
+      </div>
+      
+      <div class="info-group">
+        <label>Email:</label>
+        <p>{{usuario.email}}</p>
+      </div>
+      
+      <div class="info-group">
+        <label>Teléfono:</label>
+        <p>{{usuario.telefono || 'No proporcionado'}}</p>
+      </div>
+      
+      <div class="info-group">
+        <label>Método de autenticación:</label>
+        <p>{{usuario.proveedor | titlecase}}</p>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="edit-button" (click)="iniciarEdicion()">Editar Perfil</button>
+      </div>
+    </div>
   </div>
 
-  <div class="tabla-wrapper">
-    <table class="tabla-usuarios">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Correo</th>
-          <th>Proveedor</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let usuario of usuarios">
-          <td>{{ usuario.nombre }}</td>
-          <td class="correo-columna">{{ usuario.correo }}</td>
-          <td>
-            <ng-container [ngSwitch]="usuario.proveedor">
-              <i *ngSwitchCase="'facebook'" class="fa-brands fa-facebook" style="color:#3b5998"></i>
-              <i *ngSwitchCase="'google'" class="fa-brands fa-google" style="color:#db4437"></i>
-              <i *ngSwitchCase="'github'" class="fa-brands fa-github" style="color:#24292e"></i>
-              <i *ngSwitchCase="'email'" class="fa-solid fa-envelope" style="color:#6d4c41"></i>
-            </ng-container>
-          </td>
-          <td class="acciones-usuario">
-            <button (click)="editarUsuario(usuario)" aria-label="Editar usuario">
-              <i class="fa-solid fa-pen"></i>
-            </button>
-            <button (click)="eliminarUsuario(usuario.id!)" aria-label="Eliminar usuario">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div *ngIf="editando" class="edit-form">
+    <h2>Editar Perfil</h2>
+    
+    <form (ngSubmit)="guardarCambios()" class="profile-form">
+      <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" [(ngModel)]="usuario.nombre" name="nombre" required class="form-input">
+      </div>
+      
+      <div class="form-group">
+        <label for="apellido">Apellido</label>
+        <input type="text" id="apellido" [(ngModel)]="usuario.apellido" name="apellido" required class="form-input">
+      </div>
+      
+      <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input type="tel" id="telefono" [(ngModel)]="usuario.telefono" name="telefono" class="form-input">
+      </div>
+      
+      <div class="form-actions">
+        <button type="button" class="cancel-button" (click)="cancelarEdicion()">Cancelar</button>
+        <button type="submit" class="save-button">Guardar Cambios</button>
+      </div>
+    </form>
   </div>
+</div>
+
+<div *ngIf="loading" class="loading">
+  <div class="spinner"></div>
+  <p>Cargando perfil...</p>
 </div>
